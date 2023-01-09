@@ -141,9 +141,14 @@
         "body": "ROUND(${1:string},${2:0})",
         "description": "use Trim function"
     },
-    "Foreach": {
-    "prefix": "foreach",
-    "body": "for each ${1:item}",
-    "description": "use Trim function"
+    "foreach": {
+        "prefix": "foreach",
+        "body": [
+            "for each ${1:item} in ${2:array}",
+            "${3:response.write(\"<br>item: \"&item)}$0",
+            "next"
+        ],
+        "description": "non ho voglia di fare la descrizione"
+    },
     },
 }

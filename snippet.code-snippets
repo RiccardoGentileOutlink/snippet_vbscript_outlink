@@ -1,0 +1,137 @@
+{
+    // Place your global snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+    // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+    // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+    // used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+    // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+    // Placeholders with the same ids are connected.
+    // Example:
+    // "Print to console": {
+    // 	"scope": "javascript,typescript",
+    // 	"prefix": "log",
+    // 	"body": [
+    // 		"console.log('$1');",
+    // 		"$2"
+    // 	],
+    // 	"description": "Log output to console"
+    // }
+    "Response Write": {
+        "prefix": "write",
+        "body": [
+            "response.write(\"<br>${1:string}: \"&${1:element})$0"
+        ],
+        "description": "create skeleton for response.write with clear format"
+    },
+    "tag html": {
+        "prefix": "tag",
+        "body": [
+            "<${1:tag} ${2:class=\"${3}\"}>",
+            "$0",
+            "</${1}>"
+        ],
+        "description": "create skeleton for all html tag"
+    },
+    "add marker HTML": {
+        "prefix": "marker_HTML",
+        "body": [
+            "<!-- TODO | MARKER | ${2:TODO}-->$0"
+        ],
+        "description": "create personal marker for simplify coding (HTML)"
+    },
+    "add marker VBScrpit": {
+        "prefix": "marker_vb",
+        "body": [
+            "' TODO | MARKER | ${2:TODO}$0"
+        ],
+        "description": "create personal marker for simplify coding (VBScript)"
+    },
+    "add space in HTML": {
+        "prefix": "space",
+        "body": "&nbsp;$0",
+        "description": "insert space in HTML element"
+    },
+    "request querystring": {
+        "prefix": "querystring",
+        "body": "Request.QueryString(\"${1:param}\")$0",
+        "description": "create QueryString Request skeleton"
+    },
+    "if": {
+        "prefix": "if",
+        "body": [
+            "if ${1:not?} ${2:condition} then",
+            "$0",
+            "end if"
+        ],
+        "description": "create skeleton for if instruction"
+    },
+    "while": {
+        "prefix": "while",
+        "body": [
+            "while ${1:not?} ${2:condition}",
+            "$0",
+            "${3:reader}.MoveNext",
+            "wend"
+        ],
+        "description": "create skeleton for if instruction"
+    },
+    "include file": {
+        "prefix": "include",
+        "body": "<!--#include file=\"${1:FileName}\" -->$0",
+        "description": "insert include instruction"
+    },
+    "convert into number": {
+        "prefix": "numeroCalcolo",
+        "body": "NumeroCalcolo(${1:param})",
+        "description": "use NumeroCalcolo function"
+    },
+    "Response Check": {
+        "prefix": "check",
+        "body": "Response.Write(\"<br>!check!\")",
+        "description": "create a comment for checking"
+    },
+    "Hidden Camp": {
+        "prefix": "hidden",
+        "body": "<input type=\"hidden\" id=\"${1}\" ${2:name=\"${1}\"} value=\"<%=${3:value}%>\" />",
+        "description": "create a hidden field"
+    },
+    "Replace": {
+        "prefix": "replace",
+        "body": "Replace(${1:string},\"${2:replace}\",\"${3:with}\")",
+        "description": "use Replace function"
+    },
+    "DatePart": {
+        "prefix": "datepart",
+        "body": "DatePart(\"${1:period}\",${2:param})",
+        "description": "use DatePart function"
+    },
+    "DateAdd": {
+        "prefix": "dateadd",
+        "body": "DateAdd(\"${1:period}\",${2:number},${3:param})",
+        "description": "use DateAdd function"
+    },
+    "Length": {
+        "prefix": "length",
+        "body": "Len(${1:string})",
+        "description": "use Len function for string"
+    },
+    "UBound": {
+        "prefix": "ubound",
+        "body": "UBOUND(${1:array})",
+        "description": "use UBOUND function for array"
+    },
+    "Split": {
+        "prefix": "split",
+        "body": "Split(${1:string},\"${2:splitter}\")",
+        "description": "use UBOUND function for array"
+    },
+    "Trim": {
+        "prefix": "trim",
+        "body": "trim(${1:string})",
+        "description": "use Trim function"
+    },
+    "Round": {
+        "prefix": "round",
+        "body": "ROUND(${1:string},${2:0})",
+        "description": "use Trim function"
+    },
+}

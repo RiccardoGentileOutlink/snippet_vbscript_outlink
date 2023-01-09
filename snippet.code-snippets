@@ -22,14 +22,21 @@
         ],
         "description": "create skeleton for response.write with clear format"
     },
-    "tag html": {
+    "div": {
+        "prefix": "div",
+        "body": [
+            "<div${2: class=\"${3}\"}>",
+            "$0",
+            "</div>"
+        ],
+        "description": "create skeleton for new div whit class"
+    },
+    "tag": {
         "prefix": "tag",
         "body": [
-            "<${1:tag} ${2:class=\"${3}\"}>",
-            "$0",
-            "</${1}>"
+            "<${1:tag}>$0</${1}>"
         ],
-        "description": "create skeleton for all html tag"
+        "description": "create skeleton for new div whit class"
     },
     "add marker HTML": {
         "prefix": "marker_HTML",

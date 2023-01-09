@@ -29,14 +29,14 @@
             "$0",
             "</div>"
         ],
-        "description": "create skeleton for new div whit class"
+        "description": "create skeleton for new div with class"
     },
     "tag": {
         "prefix": "tag",
         "body": [
             "<${1:tag}>$0</${1}>"
         ],
-        "description": "create skeleton for new div whit class"
+        "description": "create skeleton for new div with class"
     },
     "add marker HTML": {
         "prefix": "marker_HTML",
@@ -140,5 +140,10 @@
         "prefix": "round",
         "body": "ROUND(${1:string},${2:0})",
         "description": "use Trim function"
+    },
+    "Foreach": {
+    "prefix": "foreach",
+    "body": "for each ${1:item}",
+    "description": "use Trim function"
     },
 }

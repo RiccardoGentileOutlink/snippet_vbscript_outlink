@@ -1,0 +1,1 @@
+# snippet_vbscript_outlink

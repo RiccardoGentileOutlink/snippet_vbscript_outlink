@@ -25,18 +25,16 @@
     "div": {
         "prefix": "div",
         "body": [
-            "<div${2: class=\"${3}\"}>",
-            "$0",
-            "</div>"
+            "<div${2: class=\"${3}\"}>$0</div>"
         ],
-        "description": "create skeleton for new div with class"
+        "description": "create skeleton for new div whit class"
     },
     "tag": {
         "prefix": "tag",
         "body": [
             "<${1:tag}>$0</${1}>"
         ],
-        "description": "create skeleton for new div with class"
+        "description": "create skeleton for new div whit class"
     },
     "add marker HTML": {
         "prefix": "marker_HTML",
@@ -149,6 +147,5 @@
             "next"
         ],
         "description": "non ho voglia di fare la descrizione"
-    },
     },
 }

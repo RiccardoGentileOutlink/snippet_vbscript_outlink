@@ -1,151 +1,1187 @@
-{
-    // Place your global snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
-    // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
-    // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
-    // used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
-    // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
-    // Placeholders with the same ids are connected.
-    // Example:
-    // "Print to console": {
-    // 	"scope": "javascript,typescript",
-    // 	"prefix": "log",
-    // 	"body": [
-    // 		"console.log('$1');",
-    // 		"$2"
-    // 	],
-    // 	"description": "Log output to console"
-    // }
-    "Response Write": {
-        "prefix": "write",
-        "body": [
-            "response.write(\"<br>${1:string}: \"&${1:element})$0"
-        ],
-        "description": "create skeleton for response.write with clear format"
-    },
-    "div": {
-        "prefix": "div",
-        "body": [
-            "<div${2: class=\"${3}\"}>$0</div>"
-        ],
-        "description": "create skeleton for new div whit class"
-    },
-    "tag": {
-        "prefix": "tag",
-        "body": [
-            "<${1:tag}>$0</${1}>"
-        ],
-        "description": "create skeleton for new div whit class"
-    },
-    "add marker HTML": {
-        "prefix": "marker_HTML",
-        "body": [
-            "<!-- TODO | MARKER | ${2:TODO}-->$0"
-        ],
-        "description": "create personal marker for simplify coding (HTML)"
-    },
-    "add marker VBScrpit": {
-        "prefix": "marker_vb",
-        "body": [
-            "' TODO | MARKER | ${2:TODO}$0"
-        ],
-        "description": "create personal marker for simplify coding (VBScript)"
-    },
-    "add space in HTML": {
-        "prefix": "space",
-        "body": "&nbsp;$0",
-        "description": "insert space in HTML element"
-    },
-    "request querystring": {
-        "prefix": "querystring",
-        "body": "Request.QueryString(\"${1:param}\")$0",
-        "description": "create QueryString Request skeleton"
-    },
-    "if": {
-        "prefix": "if",
-        "body": [
-            "if ${1:not?} ${2:condition} then",
-            "$0",
-            "end if"
-        ],
-        "description": "create skeleton for if instruction"
-    },
-    "while": {
-        "prefix": "while",
-        "body": [
-            "while ${1:not?} ${2:condition}",
-            "$0",
-            "${3:reader}.MoveNext",
-            "wend"
-        ],
-        "description": "create skeleton for if instruction"
-    },
-    "include file": {
-        "prefix": "include",
-        "body": "<!--#include file=\"${1:FileName}\" -->$0",
-        "description": "insert include instruction"
-    },
-    "convert into number": {
-        "prefix": "numeroCalcolo",
-        "body": "NumeroCalcolo(${1:param})",
-        "description": "use NumeroCalcolo function"
-    },
-    "Response Check": {
-        "prefix": "check",
-        "body": "Response.Write(\"<br>!check!\")",
-        "description": "create a comment for checking"
-    },
-    "Hidden Camp": {
-        "prefix": "hidden",
-        "body": "<input type=\"hidden\" id=\"${1}\" ${2:name=\"${1}\"} value=\"<%=${3:value}%>\" />",
-        "description": "create a hidden field"
-    },
-    "Replace": {
-        "prefix": "replace",
-        "body": "Replace(${1:string},\"${2:replace}\",\"${3:with}\")",
-        "description": "use Replace function"
-    },
-    "DatePart": {
-        "prefix": "datepart",
-        "body": "DatePart(\"${1:period}\",${2:param})",
-        "description": "use DatePart function"
-    },
-    "DateAdd": {
-        "prefix": "dateadd",
-        "body": "DateAdd(\"${1:period}\",${2:number},${3:param})",
-        "description": "use DateAdd function"
-    },
-    "Length": {
-        "prefix": "length",
-        "body": "Len(${1:string})",
-        "description": "use Len function for string"
-    },
-    "UBound": {
-        "prefix": "ubound",
-        "body": "UBOUND(${1:array})",
-        "description": "use UBOUND function for array"
-    },
-    "Split": {
-        "prefix": "split",
-        "body": "Split(${1:string},\"${2:splitter}\")",
-        "description": "use UBOUND function for array"
-    },
-    "Trim": {
-        "prefix": "trim",
-        "body": "trim(${1:string})",
-        "description": "use Trim function"
-    },
-    "Round": {
-        "prefix": "round",
-        "body": "ROUND(${1:string},${2:0})",
-        "description": "use Trim function"
-    },
-    "foreach": {
-        "prefix": "foreach",
-        "body": [
-            "for each ${1:item} in ${2:array}",
-            "${3:response.write(\"<br>item: \"&item)}$0",
-            "next"
-        ],
-        "description": "non ho voglia di fare la descrizione"
-    },
-}
+<%
+'DATO UN ARTICOLO ESTRAGGO IL CONSUMO DEI MESI SUCCESSIVI O IL CONSUMO MEDIO A SECONDA DELLA TIPOLOGIA DI ARTICOLO  (Vale solo per art. a rotazione e articoli alta stagionalità)
+'POTREI AVERE PIU' FORNITORI PER L'ARTICOLO QUINDI PRENDO IL FORNITORE CON LA % DI FORNITURA + ALTA E IN CASO DI 50% UTILIZZO IL FORNITORE PIU' PERFORMANTE (lead time più basso)
+'I GG MAX DURATA CONTAINER DIPENDONO DAL BUYER (visibili su config acquisti)
+'I GIORNI DI SCORTA DIPENDONO DAL GRUPPO O DAL PARAMETRO AZIENDALE
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function CalcolaAndamentoIpotetico(A1_CODICE,CodiceArticolo_OS,MESI_DA_VISUALIZZARE,AltaStagionalita,DataInizio)
+'TROVO IL FORNITORE DA UTILIZZARE PER ARTICOLI NON StAGIONALI
+SQL_F = "SELECT TOP (1)  O_FornitoriArticoli.A1_CODICE_CLIFOR "_
+&" FROM  O_FornitoriArticoli INNER JOIN O_Fornitori ON O_FornitoriArticoli.A1_CODICE_CLIFOR = O_Fornitori.A1_CODICE_CLIFOR AND O_FornitoriArticoli.A1_CODICE = O_Fornitori.A1_DITTA_CODICE "_
+&" WHERE  (O_FornitoriArticoli.A1_CODICE = "&A1_CODICE&") AND (O_FornitoriArticoli.CodiceArticolo = '"&CodiceArticolo_OS&"') AND (O_Fornitori.GG_DurataMerceContainer > 0) "_
+&" ORDER BY O_FornitoriArticoli.PercentualeFornitura DESC, O_Fornitori.GG_DurataMerceContainer"
+Set rs_F = Connessione.Execute(SQL_F)
+if not rs_F.EOF or not rs_F.BOF Then
+    CodiceFornitore = rs_F("A1_CODICE_CLIFOR")
+End if
+rs_F.Close
+Set rs_F = Nothing
+
+
+'''''''''''''O_AltaStagionalita_fornitoriContainer
+
+VALORI_ANDAMENTO_IPOTETICO=""
+DataInizio = Date()
+DataFine = DateAdd("m", MESI_DA_VISUALIZZARE, SalvaData(DataInizio))
+'    Response.Write("DataInizio: "&DataInizio&"<br>")
+'    Response.Write("DataFine: "&DataFine&"<br>")
+MeseDataInizio = Month(SalvaData(DataInizio))
+AnnoDataInizio = Year(SalvaData(DataInizio))
+
+MeseDataFine = Month(SalvaData(DataFine))
+AnnoDataFine = Year(SalvaData(DataFine))
+'Se il periodo copre 3 anni devo inserire anche l'anno centrale (esempio da 10/2022 a 01/2024)
+    DiffAnni = AnnoDataFine-AnnoDataInizio
+    if DiffAnni > 1 Then
+        FiltroAnnoCentrale = " or (tbl_as.anno = "&AnnoDataInizio+1&")"
+    Else
+        FiltroAnnoCentrale = ""
+    End if 
+    if MESI_DA_VISUALIZZARE >= 30 then FiltroAnnoCentrale=FiltroAnnoCentrale&" or Tbl_AS.anno= 2024"
+
+
+if AltaStagionalita = 0 then
+    SQL_OS = "SELECT O_Fornitori.GG_DurataMerceContainer, CASE WHEN COALESCE(O_GruppiCodici.GG_SCORTA_MIN,0) > 0 THEN O_GruppiCodici.GG_SCORTA_MIN ELSE O_Variabili.ScortaMinimaGG END AS GG_Scorta, O_DatiBuyer.GG_GiorniMaxDurataMerce, O_CodiciArticolo.CodiceArticolo, O_CodiciArticolo.ConsumoMedio_3_6_mesi "_
+    &" FROM O_GruppiCodici INNER JOIN O_FornitoriArticoli ON O_GruppiCodici.idGruppoCodici = O_FornitoriArticoli.idGruppoCodici INNER JOIN O_Fornitori ON O_FornitoriArticoli.A1_CODICE_CLIFOR = O_Fornitori.A1_CODICE_CLIFOR AND O_FornitoriArticoli.A1_CODICE = O_Fornitori.A1_DITTA_CODICE INNER JOIN O_Variabili ON O_GruppiCodici.A1_CODICE = O_Variabili.A1_CODICE INNER JOIN O_DatiBuyer ON O_GruppiCodici.idContatto = O_DatiBuyer.idContatto INNER JOIN O_GruppiCodici_Codici ON O_GruppiCodici.idGruppoCodici = O_GruppiCodici_Codici.idGruppoCodici INNER JOIN O_CodiciArticolo ON O_GruppiCodici_Codici.A1_CODICE = O_CodiciArticolo.A1_DITTA_CODICE AND O_GruppiCodici_Codici.CodiceArticolo = O_CodiciArticolo.CodiceArticolo "_
+    &" WHERE O_FornitoriArticoli.A1_CODICE_CLIFOR = "&CodiceFornitore&" AND  (O_CodiciArticolo.CodiceArticolo = '"&CodiceArticolo_OS&"') AND (O_FornitoriArticoli.PercentualeFornitura > 0) AND (O_GruppiCodici.A1_CODICE = "&A1_CODICE&") AND (O_GruppiCodici.GruppoGestito = 1) AND (O_GruppiCodici.altaStagionalita = 0) "_
+    &" ORDER BY O_GruppiCodici.idGruppoCodici, O_FornitoriArticoli.PercentualeFornitura DESC, O_Fornitori.GG_DurataMerceContainer"
+    Set rs_OS = Connessione.Execute(SQL_OS)
+    if not rs_OS.EOF or not rs_OS.BOF Then
+            FreqFornitura = rs_OS("GG_DurataMerceContainer")
+            GG_Scorta = rs_OS("GG_Scorta")
+            CM36 = rs_OS("ConsumoMedio_3_6_mesi")
+            DurataMerceBuyer = rs_OS("GG_GiorniMaxDurataMerce")
+            if NumeroCalcolo(FreqFornitura) > NumeroCalcolo(DurataMerceBuyer) Then
+                LimiteDurataMerce = DurataMerceBuyer
+            Else
+                LimiteDurataMerce = FreqFornitura
+            End if
+            Limite_OS = NumeroCalcolo(GG_Scorta) * NumeroCalcolo(CM36) + NumeroCalcolo(LimiteDurataMerce) * NumeroCalcolo(CM36)
+            'Response.Write("GG_Scorta: "&GG_Scorta&"<br>")
+            'Response.Write("CM36: "&CM36&"<br>")
+            'Response.Write("LimiteDurataMerce: "&LimiteDurataMerce&"<br>")
+            
+            datacount=DataInizio
+            While datacount <= DataFine
+               VALORI_ANDAMENTO_IPOTETICO=VALORI_ANDAMENTO_IPOTETICO & ROUND(Limite_OS,0)&","
+                datacount= DateAdd("d",1,datacount) 	
+
+            Wend
+    End if
+    rs_OS.Close
+    Set rs_OS = Nothing
+Else
+
+
+SQL_OS= "SELECT Tbl_AS.anno, Tbl_AS.mese, O_CodiciArticolo.CodiceArticolo, Tbl_AS.consumo AS ConsumoMensile, Tbl_AS.scorta AS ScortaPercentuale, O_AltaStagionalita_fornitoriContainer.GG_durataMerce, O_DatiBuyer.GG_GiorniMaxDurataMerce FROM O_AltaStagionalita_valori as Tbl_AS INNER JOIN O_CodiciArticolo INNER JOIN O_FornitoriArticoli ON O_CodiciArticolo.A1_DITTA_CODICE = O_FornitoriArticoli.A1_CODICE AND O_CodiciArticolo.CodiceArticolo = O_FornitoriArticoli.CodiceArticolo INNER JOIN O_GruppiCodici ON O_FornitoriArticoli.idGruppoCodici = O_GruppiCodici.idGruppoCodici ON Tbl_AS.CodiceArticolo = O_CodiciArticolo.CodiceArticolo AND Tbl_AS.A1_CODICE = O_CodiciArticolo.A1_DITTA_CODICE INNER JOIN O_DatiBuyer ON O_GruppiCodici.idContatto = O_DatiBuyer.idContatto INNER JOIN O_Variabili ON O_CodiciArticolo.A1_DITTA_CODICE = O_Variabili.A1_CODICE INNER JOIN O_AltaStagionalita_fornitoriContainer ON O_FornitoriArticoli.A1_CODICE_CLIFOR = O_AltaStagionalita_fornitoriContainer.A1_CODICE_CLIFOR AND O_FornitoriArticoli.A1_CODICE = O_AltaStagionalita_fornitoriContainer.A1_CODICE AND Tbl_AS.mese = O_AltaStagionalita_fornitoriContainer.mese WHERE O_FornitoriArticoli.A1_CODICE_CLIFOR = "&CodiceFornitore&" AND (Tbl_AS.consumo >= 0) AND (O_CodiciArticolo.CodiceArticolo = '"&CodiceArticolo_OS&"') AND (O_GruppiCodici.GruppoGestito = 1) AND (O_FornitoriArticoli.Gestito = 1) AND (O_GruppiCodici.altaStagionalita = 1) AND (O_CodiciArticolo.A1_DITTA_CODICE = "&A1_CODICE&") AND ((Tbl_AS.anno = "&AnnoDataInizio&") AND (Tbl_AS.mese >= "&MeseDataInizio&") OR (Tbl_AS.anno = "&AnnoDataFine&") AND (Tbl_AS.mese < "&MeseDataFine&") "&FiltroAnnoCentrale&" ) ORDER BY Tbl_AS.anno, Tbl_AS.mese ASC"
+Set rs_OS = Connessione.Execute(SQL_OS)
+first = true
+cRec = 0
+datacount = dataInizio
+if not rs_OS.EOF or not rs_OS.BOF Then
+    While not rs_OS.EOF
+        FreqFornitura = rs_OS("GG_durataMerce")
+        ScortaPercentuale = rs_OS("ScortaPercentuale")
+        ConsumoMensile = rs_OS("ConsumoMensile")
+        DurataMerceBuyer = rs_OS("GG_GiorniMaxDurataMerce")
+
+        FreqFornitura_SUCC = FreqFornitura
+        ScortaPercentuale_SUCC = ScortaPercentuale
+        ConsumoMensile_SUCC = ConsumoMensile
+        DurataMerceBuyer_SUCC = DurataMerceBuyer
+
+        if rs_OS.RecordCount > cRec + 1 then 
+            rs_OS.MoveNext
+            
+            FreqFornitura_SUCC = rs_OS("GG_durataMerce")
+            ScortaPercentuale_SUCC = rs_OS("ScortaPercentuale")
+            ConsumoMensile_SUCC = rs_OS("ConsumoMensile")
+            DurataMerceBuyer_SUCC = rs_OS("GG_GiorniMaxDurataMerce")
+
+            rs_OS.MovePrevious
+        end if
+
+        if NumeroCalcolo(FreqFornitura_SUCC) > NumeroCalcolo(DurataMerceBuyer_SUCC) Then
+            LimiteDurataMerce_SUCC = DurataMerceBuyer_SUCC
+        Else
+            LimiteDurataMerce_SUCC = FreqFornitura_SUCC
+        End if
+
+
+        if NumeroCalcolo(FreqFornitura) > NumeroCalcolo(DurataMerceBuyer) Then
+            LimiteDurataMerce = DurataMerceBuyer
+        Else
+            LimiteDurataMerce = FreqFornitura
+        End if
+
+        anno = rs_OS("anno")
+        mese = rs_OS("mese")
+        daysInMonth = Day(DateSerial(anno, mese + 1, 0))      
+
+        Limite_OS = NumeroCalcolo(ConsumoMensile)/100*NumeroCalcolo(ScortaPercentuale) + NumeroCalcolo(LimiteDurataMerce) * NumeroCalcolo(ConsumoMensile)/30
+        Limite_OS_SUCC = NumeroCalcolo(ConsumoMensile_SUCC)/100*NumeroCalcolo(ScortaPercentuale_SUCC) + NumeroCalcolo(LimiteDurataMerce_SUCC) * NumeroCalcolo(ConsumoMensile_SUCC)/30
+        dividendoFirst=daysInMonth - datePart("d",datacount)
+       
+
+        valoreAttuale = Limite_OS
+        valoreGiornaliero = valoreAttuale
+
+        ' Calcolo la differenza alla variazione del valore attuale
+        differenza = valoreAttuale - Limite_OS_SUCC
+        ' Trovo il numero da sottrarre/aggiungere ad ogni giorno del mese per creare la curva SINUOSA!
+        if first=true then
+            costanteMensile = differenza / (dividendoFirst+1)
+            first=false
+        else 
+             costanteMensile = differenza / daysInMonth
+        end if
+
+        ' Valore usato per stampare i valori nel grafico
+        valoreDaStampare = ""
+
+        ' Ciclo per ogni giorno del mese corrente
+        While datePart("m",DataInizio) = datePart("m",datacount)
+            'Controllo per il primo valore che è vuoto, e deve partire da se stesso
+                'Controllo il segno della costante mensile, e nel caso sommo o sottraggo
+                if costanteMensile > 0 then
+                    
+                    valoreGiornaliero = valoreGiornaliero - ABS(costanteMensile)
+                else
+                    
+                    valoreGiornaliero = valoreGiornaliero + ABS(costanteMensile)
+                end if
+            valore_tmp = valoreGiornaliero
+            valoreDaStampare= valore_tmp
+            valoreDaStampare= ROUND(valoreDaStampare,0)
+            'Creo la stringa di valori per il grafico
+            VALORI_ANDAMENTO_IPOTETICO=VALORI_ANDAMENTO_IPOTETICO &valoreDaStampare&","
+            datacount= DateAdd("d",1,datacount) 
+        wend
+        'Reinizializzo il tutto per il nuovo mese che verrà
+        DataInizio = datacount
+        cRec = cRec + 1
+        rs_OS.MoveNext
+    Wend
+    datacount=DataInizio
+    DataInizio_temp = DataInizio
+    valoreAttuale = 0
+    'response.write("<br>VALORI_ANDAMENTO_IPOTETICO: "&VALORI_ANDAMENTO_IPOTETICO)
+End if
+rs_OS.Close
+Set rs_OS = Nothing
+
+End if
+CalcolaAndamentoIpotetico= VALORI_ANDAMENTO_IPOTETICO
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Function datiFatturatoGrafico(codiceArticolo_inner,dataInizioGrafico_inner,A1_CODICE_inner)
+
+    'response.write("<br>dataInizioGrafico_inner: "&dataInizioGrafico_inner)
+
+    first = true
+
+    dim arrayFatturato(2)
+
+    dataFineGrafico = dateadd("m",13,dataInizioGrafico_inner)
+    'Ciclo i mesi tra la data di inizioGrafico e di fine grafico
+    dataCheck=dataInizioGrafico_inner
+    dataCount=dataInizioGrafico_inner
+    somma = 0
+    somma_succ=0
+    differenza=0
+
+    while DatePart("m",dataInizioGrafico_inner)&"/"&DatePart("yyyy",dataInizioGrafico_inner) <> DatePart("m",dataFineGrafico)&"/"&DatePart("yyyy",dataFineGrafico)
+        meseCiclo = DatePart("m",dataInizioGrafico_inner)
+        annoCiclo = DatePart("yyyy",dataInizioGrafico_inner)
+        dataInizioGrafico_inner = dateadd("m",1,dataInizioGrafico_inner)
+
+        daysInMonth = Day(DateSerial(annoCiclo, meseCiclo + 1, 0))      
+
+        SQLCON="SELECT sum(mr04_colli) AS quantita,month(mr04_dal) as mese,year(mr04_dal) AS anno FROM Nor.dbo.MR04_FATTURATO WHERE month(mr04_dal) = "&meseCiclo&" and year(mr04_dal) = '"&annoCiclo&"' AND MR04_DITTA = "&A1_CODICE_inner&" and mr04_codart_mg66 = '"&codiceArticolo_inner&"' group by month(mr04_dal),year(mr04_dal)"
+        'response.write("<br>SQLCON: "&SQLCON)        
+        set rsCon = Connessione.execute(SQLCON)
+
+        if not rsCon.EOF or not rsCon.BOF then
+            somma =numeroCalcolo(rsCon("quantita"))
+        end if
+
+        venditaGiornaliera = somma / daysInMonth
+
+        if  venditaGiornaliera<1 and venditaGiornaliera>0 then
+            venditaGiornaliera=1
+        end if
+
+        venditaGiornaliera_tmp= ROUND(venditaGiornaliera,1)
+        venditaGiornaliera_tmp= replace(venditaGiornaliera_tmp,",",".")
+        rsCon.close
+
+        while DatePart("m",dataCheck)=DatePart("m",dataCount) 
+            STRINGA_CONSUMI_SOMMA=STRINGA_CONSUMI_SOMMA & somma & "|"
+            'response.write("<br>venditaGiornaliera_tmp: "&venditaGiornaliera_tmp)
+            ETI_INFO_CONSUMI = "<br>Consumo Giornaliero: "&venditaGiornaliera_tmp
+            ETI_STRINGA_CONSUMI=ETI_STRINGA_CONSUMI&","&ETI_INFO_CONSUMI
+            
+            datacount= DateAdd("d",1,datacount) 
+        wend
+
+        dataCheck=dataCount
+        
+    wend
+
+    arrayFatturato(0)=STRINGA_CONSUMI_SOMMA
+    arrayFatturato(1)=ETI_STRINGA_CONSUMI
+
+    datiFatturatoGrafico=arrayFatturato
+    
+End Function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function GraficoSomma(A1_CODICE,dataInizioGraficoSomma)
+
+'    dataInizioGrafico_inner="01/12/2022"
+'    dataInizioGrafico_inner_global="2022/10/01"
+    dataInizioGrafico_inner=DateAdd("d",-1,Date())
+    dataInizioGrafico_inner_global=DateAdd("d",-1,Date())
+
+    if trim(A1_CODICE)&"[]" = "[]" then
+        A1_CODICE = 1
+    end if 
+
+    if trim(dataInizioGraficoSomma)&"[]" = "[]" then
+        dataInizioGrafico_inner=DateAdd("d",-1,Date())
+        dataInizioGrafico_inner_global=DateAdd("d",-1,Date())
+    end if
+
+    first = true 
+
+    dim arraySomme(10)
+
+
+    dataFineGrafico = dateadd("m",12,dataInizioGrafico_inner)
+    dataCheck=dataInizioGrafico_inner
+    dataCount=dataInizioGrafico_inner
+    differenza=0
+
+    while DatePart("m",dataInizioGrafico_inner)&"/"&DatePart("yyyy",dataInizioGrafico_inner) <> DatePart("m",dataFineGrafico)&"/"&DatePart("yyyy",dataFineGrafico)
+
+        meseCiclo = DatePart("m",dataInizioGrafico_inner)
+        meseCiclo_succ = DatePart("m",DateAdd("m",1,dataInizioGrafico_inner))
+        annoCiclo = DatePart("yyyy",dataInizioGrafico_inner)
+        dataInizioGrafico_inner = dateadd("m",1,dataInizioGrafico_inner)
+
+        daysInMonth = Day(DateSerial(annoCiclo, meseCiclo + 1, 0)) 
+
+        SQLGRAF="SELECT SUM(CASE WHEN O_GruppiCodici.altaStagionalita = 1 THEN Consumo ELSE ConsumoMedio_3_6_mesi * 30 END) AS ConsumoMensile, SUM(CASE WHEN O_GruppiCodici.altaStagionalita = 1 THEN (Consumo / 100 * scorta) ELSE ConsumoMedio_3_6_mesi * ScortaMinimaGG END) AS ScortaMensile FROM O_GruppiCodici INNER JOIN O_GruppiCodici_Codici ON O_GruppiCodici.idGruppoCodici = O_GruppiCodici_Codici.idGruppoCodici INNER JOIN O_CodiciArticolo ON O_GruppiCodici_Codici.CodiceArticolo = O_CodiciArticolo.CodiceArticolo AND O_GruppiCodici_Codici.A1_CODICE = O_CodiciArticolo.A1_DITTA_CODICE INNER JOIN O_Variabili ON O_GruppiCodici.A1_CODICE = O_Variabili.A1_CODICE LEFT OUTER JOIN O_AltaStagionalita_valori ON O_GruppiCodici_Codici.CodiceArticolo = O_AltaStagionalita_valori.CodiceArticolo AND O_GruppiCodici_Codici.A1_CODICE = O_AltaStagionalita_valori.A1_CODICE WHERE (O_GruppiCodici.A1_CODICE = "&A1_CODICE&") AND (O_GruppiCodici.GruppoGestito = 1) AND (O_AltaStagionalita_valori.anno = "&annoCiclo&" OR O_AltaStagionalita_valori.anno IS NULL) AND (O_AltaStagionalita_valori.mese = "&meseCiclo&") OR (O_GruppiCodici.A1_CODICE = 1) AND (O_GruppiCodici.GruppoGestito = 1) AND (O_AltaStagionalita_valori.anno = "&annoCiclo&" OR O_AltaStagionalita_valori.anno IS NULL) AND (O_AltaStagionalita_valori.anno IS NULL)"
+
+        set rsGRAF = Connessione.Execute(SQLGRAF)
+
+        if  not rsGRAF.EOF or not rsGRAF.BOF then
+            consumoMensile = rsGRAF("ConsumoMensile")
+            scortaMensile = rsGRAF("ScortaMensile")
+        end if
+
+        rsGRAF.Close
+        set rsGRAF = Nothing
+        
+        SQLGRAFSUCC="SELECT SUM(CASE WHEN O_GruppiCodici.altaStagionalita = 1 THEN Consumo ELSE ConsumoMedio_3_6_mesi * 30 END) AS ConsumoMensile, SUM(CASE WHEN O_GruppiCodici.altaStagionalita = 1 THEN (Consumo / 100 * scorta) ELSE ConsumoMedio_3_6_mesi * ScortaMinimaGG END) AS ScortaMensile FROM O_GruppiCodici INNER JOIN O_GruppiCodici_Codici ON O_GruppiCodici.idGruppoCodici = O_GruppiCodici_Codici.idGruppoCodici INNER JOIN O_CodiciArticolo ON O_GruppiCodici_Codici.CodiceArticolo = O_CodiciArticolo.CodiceArticolo AND O_GruppiCodici_Codici.A1_CODICE = O_CodiciArticolo.A1_DITTA_CODICE INNER JOIN O_Variabili ON O_GruppiCodici.A1_CODICE = O_Variabili.A1_CODICE LEFT OUTER JOIN O_AltaStagionalita_valori ON O_GruppiCodici_Codici.CodiceArticolo = O_AltaStagionalita_valori.CodiceArticolo AND O_GruppiCodici_Codici.A1_CODICE = O_AltaStagionalita_valori.A1_CODICE WHERE (O_GruppiCodici.A1_CODICE = "&A1_CODICE&") AND (O_GruppiCodici.GruppoGestito = 1) AND (O_AltaStagionalita_valori.anno = "&DatePart("yyyy",dataInizioGrafico_inner)&" OR O_AltaStagionalita_valori.anno IS NULL) AND (O_AltaStagionalita_valori.mese = "&DatePart("m",dataInizioGrafico_inner)&") OR (O_GruppiCodici.A1_CODICE = 1) AND (O_GruppiCodici.GruppoGestito = 1) AND (O_AltaStagionalita_valori.anno = "&DatePart("yyyy",dataInizioGrafico_inner)&" OR O_AltaStagionalita_valori.anno IS NULL) AND  (O_AltaStagionalita_valori.anno IS NULL)"
+
+        set rsGRAFSUCC = Connessione.Execute(SQLGRAFSUCC)
+
+        if  not rsGRAFSUCC.EOF or not rsGRAFSUCC.BOF then
+            consumoMensile_succ = rsGRAFSUCC("ConsumoMensile")
+            scortaMensile_succ = rsGRAFSUCC("ScortaMensile")
+        end if
+
+        rsGRAFSUCC.Close
+        set rsGRAFSUCC = Nothing
+        dividendoFirst_somma=daysInMonth - datePart("d",dataInizioGrafico_inner)
+
+        differenza_consumo = consumoMensile - consumoMensile_succ
+        differenza_scorta = scortaMensile - scortaMensile_succ
+
+        if first=true then
+            costanteMensile_consumo = differenza_consumo / (dividendoFirst_somma+1)
+            costanteMensile_scorta = differenza_scorta / (dividendoFirst_somma+1)
+            first=false
+        else 
+             costanteMensile_consumo = differenza_consumo / daysInMonth
+             costanteMensile_scorta = differenza_scorta / daysInMonth
+        end if
+
+        valoreDaStampare_consumo =""
+        valoreDaStampare_scorta =""
+
+        While datePart("m",DataInizio) = datePart("m",datacount)
+                if costanteMensile_consumo > 0 then
+                    
+                    consumoMensile = consumoMensile - ABS(costanteMensile_consumo)
+                else
+                    
+                    consumoMensile = consumoMensile + ABS(costanteMensile_consumo)
+                end if
+
+                if costanteMensile_scorta > 0 then
+                    
+                    scortaMensile = scortaMensile - ABS(costanteMensile_scorta)
+                else
+                    
+                    scortaMensile = scortaMensile + ABS(costanteMensile_scorta)
+                end if
+
+            consumo_tmp = consumoMensile
+            scorta_tmp = scortaMensile
+
+            consumo_DaStampare= consumo_tmp
+            scorta_DaStampare= scorta_tmp
+
+            consumo_DaStampare= ROUND(consumo_DaStampare,0)
+            scorta_DaStampare= ROUND(scorta_DaStampare,0)
+            overstock_DaStampare = scorta_DaStampare * 2.5
+            overstock_DaStampare = ROUND(overstock_DaStampare,0) 
+
+            VALORI_CONSUMO=VALORI_CONSUMO &consumo_DaStampare&","
+            VALORI_SCORTA=VALORI_SCORTA &scorta_DaStampare&","
+            VALORI_OVERSTOCK = VALORI_OVERSTOCK&overstock_DaStampare&","
+            datacount= DateAdd("d",1,datacount) 
+
+        wend
+        DataInizio = datacount
+
+
+    wend
+
+    arraySomme(0) = VALORI_CONSUMO
+    arraySomme(1) = VALORI_SCORTA
+    arraySomme(3) = VALORI_OVERSTOCK
+
+
+    listaArticoli ="'"
+    listaQtaAgg =""
+
+    SQLARTICOLI ="SELECT O_GruppiCodici_Codici.CodiceArticolo, (SELECT TOP 1 CASE WHEN [USA_TempoFornituraManuale] = 1 THEN CONVERT(varchar(10),[TempoFornituraManuale]) + '|' + CONVERT(varchar(10),[QuantitaDaOrdinare]) ELSE CONVERT(varchar(10),[TempoFornitura]) + '|' + CONVERT(varchar(10),[QuantitaDaOrdinare]) END FROM [NorSQL].[dbo].[O_FornitoriArticoli] WHERE [A1_CODICE] = 1 AND Gestito = 1 AND CodiceArticolo = O_GruppiCodici_Codici.CodiceArticolo ORDER BY PercentualeFornitura DESC)  AS TF_QTA FROM O_GruppiCodici INNER JOIN O_GruppiCodici_Codici ON O_GruppiCodici.idGruppoCodici = O_GruppiCodici_Codici.idGruppoCodici WHERE (O_GruppiCodici.A1_CODICE = 1) AND (O_GruppiCodici.GruppoGestito = 1)"
+
+    set rsSQLARTICOLI = connessione.Execute(SQLARTICOLI)
+    if not rsSQLARTICOLI.EOF and not rsSQLARTICOLI.BOF then
+    cc=1
+    Dim DicQtaAgg
+    Set DicQtaAgg = Nothing
+    Set DicQtaAgg = Server.CreateObject("Scripting.Dictionary")
+        while not rsSQLARTICOLI.EOF
+
+            articolo= rsSQLARTICOLI("CodiceArticolo")
+            qtaAgg = rsSQLARTICOLI("TF_QTA")
+
+            listaArticoli= listaArticoli&articolo&"','"
+            
+            if qtaAgg&"[]" = "[]" then
+                qtaAgg = "0|0"
+            end if 
+
+            arrayQtaAgg = split(qtaAgg,"|")
+
+            if DicQtaAgg.Exists(arrayQtaAgg(0)) then 
+                DicQtaAgg.item(arrayQtaAgg(0)) = NumeroCalcolo(DicQtaAgg.item(arrayQtaAgg(0))) + NumeroCalcolo(arrayQtaAgg(1))
+            else 
+                DicQtaAgg.Add arrayQtaAgg(0), numerocalcolo(arrayQtaAgg(1))
+            end if 
+
+        rsSQLARTICOLI.MoveNext
+        cc=cc+1
+        wend
+
+    end if
+    rsSQLARTICOLI.Close
+    set rsSQLARTICOLI = nothing
+'    
+    listaArticoli = left(listaArticoli,Len(listaArticoli)-2)
+
+    data = DateAdd("d",-1, dataInizioGrafico_inner_global)
+    dataFormat = DatePart("yyyy",dataInizioGrafico_inner_global)&"-"&DatePart("m",dataInizioGrafico_inner_global)&"-"&DatePart("d",dataInizioGrafico_inner_global)
+
+    SQLVALORI = "select Valori from O_GraficiArticoli where CodiceArticolo in ("&listaArticoli&") and Data='"&dataFormat&"'"
+
+    set rsSQLVALORI = connessione.execute(SQLVALORI)
+    
+    if not rsSQLVALORI.EOF and not rsSQLVALORI.BOF then
+        while not rsSQLVALORI.EOF
+
+            valoriArticolo = rsSQLVALORI("Valori")
+            
+            temp = split(valoriArticolo,",")
+            counter = UBOUND(temp)
+
+            stringaValori = StringaValori&valoriArticolo&"§"
+            rsSQLVALORI.MoveNext
+        wend
+    end if
+
+    rsSQLVALORI.close
+    set rsSQLVALORI = nothing
+
+    ArrayValori = split(stringaValori,"§")
+ 
+    c=0
+    i=1
+    
+    While i < counter
+        c=0
+        while c < UBOUND(ArrayValori)
+            arrayValoreArticolo = split(ArrayValori(c),",")  
+            sommaValoreArticolo = NumeroCalcolo(sommaValoreArticolo) + NumeroCalcolo(arrayValoreArticolo(i))        
+            c=c+1    
+        wend
+        stringaValoriArticoliSomma = stringaValoriArticoliSomma&sommaValoreArticolo&","
+        sommaValoreArticolo = 0
+        i=i+1
+
+        
+
+    wend
+
+    arraySommaValoreArticolo = split(stringaValoriArticoliSomma,",")
+
+    for each item in DicQtaAgg
+        arraySommaValoreArticolo(item) = arraySommaValoreArticolo(item) + DicQtaAgg(item)
+    next
+
+
+    arraySomme(2)=stringaValoriArticoliSomma
+
+
+    GraficoSomma=arraySomme
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function SaveGraficoSomma(valoriScorta, valoriArticoli)
+
+    SQLMESE = "SELECT dataInserimento FROM NorSQL.dbo.O_GraficiArticoliSomma_Mensile"
+    set rsSQLMESE = connessione.execute(SQLMESE)
+
+    if not rsSQLMESE.EOF and not rsSQLMESE.BOF then
+        while not rsSQLMESE.EOF
+            
+            dataInserimento = rsSQLMESE("dataInserimento")
+            listaDataInserimento = listaDataInserimento&dataInserimento&"|"
+
+            rsSQLMESE.movenext
+        wend
+        listaDataInserimento =  Left(listaDataInserimento, Len(listaDataInserimento) - 1) 
+        arrayDataInserimento = split(listaDataInserimento,"|")
+
+        meseGiaSalvato= false
+
+        for each item in arrayDataInserimento
+
+            if DatePart("yyyy",item)&"-"&DatePart("m",item) = DatePart("yyyy",Date())&"-"&DatePart("m",Date()) then
+                meseGiaSalvato = true
+            end if 
+
+        next    
+    end if 
+    if meseGiaSalvato = false then
+        INSERTGRAFICO="insert into O_GraficiArticoliSomma_Mensile values ('"&DatePart("yyyy",Date())&"-"&DatePart("m",Date())&"-"&DatePart("d",Date())&"','"&valoriScorta&"','"&valoriArticoli&"')"    
+        Connessione.Execute(INSERTGRAFICO)
+    end if 
+ 
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function salvaGraficoNotte(A1_CODICE)
+
+    dataInizioGraficoSomma = Date()
+
+    ArrayValoriGrafico = GraficoSomma(A1_CODICE,dataInizioGraficoSomma)
+
+    LINEA_SCORTA = ArrayValoriGrafico(1) 
+    LINEA_ARTICOLI = ArrayValoriGrafico(2)
+
+    call SaveGraficoSomma(LINEA_SCORTA,LINEA_ARTICOLI)
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getValoriTrenMagazzino(meseScelto,annoScelto,A1_CODICE)
+
+    dim arrayValoriAnalisi(100)
+
+    SQLVALORIANALISI = "SELECT * FROM AnalisiAziendale WHERE mese="&meseScelto&" and anno="&annoScelto&" and A1_CODICE="&A1_CODICE 
+    set rsSQLVALORIANALISI = connessione.execute(SQLVALORIANALISI)
+
+    maxMesi=0
+    if not rsSQLVALORIANALISI.EOF and not rsSQLVALORIANALISI.BOF then
+
+        while not rsSQLVALORIANALISI.EOF 
+
+        colli = rsSQLVALORIANALISI("Colli")
+        postiPallet = rsSQLVALORIANALISI("PostiPallet")
+        etichettePallet = rsSQLVALORIANALISI("EtichettePallet")
+        etichetteColli = rsSQLVALORIANALISI("EtichetteColli")
+        palletOS = rsSQLVALORIANALISI("PalletOS")
+        arrayValoriAnalisi(10) = rsSQLVALORIANALISI("DataAggiornamento")
+
+            if trim(rsSQLVALORIANALISI("Tipo"))= "REA" then
+ 
+                valoriColli_rea= replace(colli,";",",")
+                valoriColli_rea = replace(valoriColli_rea,"|","")
+
+                arrayValoriAnalisi(0)=valoriColli_rea
+
+                valoripostiPallet_rea= replace(postiPallet,";",",")
+                valoripostiPallet_rea = replace(valoripostiPallet_rea,"|","")
+                arrayValoriAnalisi(1)=valoripostiPallet_rea
+                arrayValoriAnalisi(2)=etichettePallet
+                arrayValoriAnalisi(3)=etichetteColli
+                arrayValoriAnalisi(8)=palletOS
+
+            else 
+                
+                valoriColli_teo= replace(colli,";",",")
+                valoriColli_teo = replace(valoriColli_teo,"|","")
+
+                arrayValoriAnalisi(4)=valoriColli_teo
+
+                valoripostiPallet_teo= replace(postiPallet,";",",")
+                valoripostiPallet_teo = replace(valoripostiPallet_teo,"|","")
+
+                arrayValoriAnalisi(5)=valoripostiPallet_teo
+                arrayValoriAnalisi(6)=etichettePallet
+                arrayValoriAnalisi(7)=etichetteColli
+                arrayValoriAnalisi(9)=palletOS
+
+            end if
+
+            rsSQLVALORIANALISI.MoveNext
+
+        wend
+    end if 
+    
+    rsSQLVALORIANALISI.close 
+    set rsSQLVALORIANALISI = nothing
+    
+    getValoriTrenMagazzino = arrayValoriAnalisi
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getValoriContainer(meseInizio,annoInizio)
+
+    valore=""
+    taglia = ""
+    mese =""
+    anno =""
+
+    SQLCONTAINER = "SELECT  O_Container.Taglia,  MONTH(CONVERT(date, convert(char(8),O_Ordini.Arrival_Date ))) AS MESE_Arrivo, YEAR(CONVERT(date, convert(char(8),O_Ordini.Arrival_Date ))) AS ANNO_Arrivo, COUNT(O_Container.Taglia) AS valore FROM O_Ordini INNER JOIN O_Container_Ordine ON O_Ordini.idContainerOrdini = O_Container_Ordine.idContainerOrdini INNER JOIN O_Container ON O_Container_Ordine.idContainer = O_Container.idContainer WHERE (O_Ordini.A1_CODICE = 1) AND (O_Ordini.Status = 'In progress') GROUP BY O_Container.Taglia, MONTH(CONVERT(date, convert(char(8),O_Ordini.Arrival_Date ))), YEAR(CONVERT(date, convert(char(8),O_Ordini.Arrival_Date ))) ORDER BY YEAR(CONVERT(date, convert(char(8),O_Ordini.Arrival_Date ))), MESE_Arrivo ASC"
+    set rsSQLCONTAINER = connessione.execute(SQLCONTAINER)
+
+    StringaValoriContainer= ""
+    c=0
+    mese_pre=""
+    anno_pre=""
+
+    if not rsSQLCONTAINER.EOF and not rsSQLCONTAINER.BOF then
+        while not rsSQLCONTAINER.EOF
+
+            taglia = rsSQLCONTAINER("Taglia")
+            mese = rsSQLCONTAINER("MESE_arrivo")
+            anno = rsSQLCONTAINER("ANNO_Arrivo")
+            valore = rsSQLCONTAINER("valore")
+
+            dataDB=CDate("01/"&mese&"/"&anno)
+            dataInizio =CDate("01/"&meseInizio&"/"&annoInizio)
+
+            if dataInizio <= dataDB then
+                Select Case taglia
+                    Case "40"
+                        stringaContainer_40 =stringaContainer_40&valore&","
+                    Case "40HC"
+                        stringaContainer_40HC =stringaContainer_40HC&valore&","
+                    Case "20"
+                        stringaContainer_20 =stringaContainer_20&valore&","
+                end Select
+            end if
+            rsSQLCONTAINER.MoveNext
+        wend
+    end if
+    
+    StringaValoriContainer = stringaContainer_40&"|"&stringaContainer_40HC&"|"&stringaContainer_20&"|"&stringaContainer_LCL
+    
+    rsSQLCONTAINER.close
+    set rsSQLCONTAINER = nothing
+
+    getValoriContainer = StringaValoriContainer
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getPalletGiazenzaDeposito() 
+
+SQLPALLETGRAZENZADEPOSITO = "SELECT SUM(CASE WHEN O_CodiciArticolo.datoCommerciale7 > 0 THEN V_GIACENZEDEP.GIACENZA / O_CodiciArticolo.datoCommerciale7 END) AS PALLET_DEPOSITO, V_GIACENZEDEP.MG70_CODDEP_MG58, GAMMA.dbo.MG58_DEPOSITI.MG58_DESCRDEP,MG58_CODDEP FROM GAMMA.dbo.MG58_DEPOSITI INNER JOIN O_GruppiCodici INNER JOIN O_GruppiCodici_Codici ON O_GruppiCodici.idGruppoCodici = O_GruppiCodici_Codici.idGruppoCodici INNER JOIN O_CodiciArticolo INNER JOIN V_GIACENZEDEP ON O_CodiciArticolo.CodiceArticolo = V_GIACENZEDEP.MG70_CODART_MG66 AND O_CodiciArticolo.A1_DITTA_CODICE = V_GIACENZEDEP.MG70_DITTA_CG18 ON O_GruppiCodici_Codici.CodiceArticolo = O_CodiciArticolo.CodiceArticolo AND O_GruppiCodici_Codici.A1_CODICE = O_CodiciArticolo.A1_DITTA_CODICE ON GAMMA.dbo.MG58_DEPOSITI.MG58_DITTA_CG18 = V_GIACENZEDEP.MG70_DITTA_CG18 AND GAMMA.dbo.MG58_DEPOSITI.MG58_CODDEP = V_GIACENZEDEP.MG70_CODDEP_MG58 WHERE O_CodiciArticolo.CodiceArticolo NOT LIKE '%CONAI%' and (O_CodiciArticolo.Gestito = 1) AND (O_GruppiCodici.GruppoSpese = 0) AND (O_CodiciArticolo.A1_DITTA_CODICE = 1) GROUP BY V_GIACENZEDEP.MG70_CODDEP_MG58, GAMMA.dbo.MG58_DEPOSITI.MG58_DESCRDEP,MG58_CODDEP"
+
+set rsSQLPALLETGRAZENZADEPOSITO= connessione.execute(SQLPALLETGRAZENZADEPOSITO)
+
+stringaPalletGiazenzaDeposito=""
+nRecord = 0
+if not rsSQLPALLETGRAZENZADEPOSITO.EOF and not rsSQLPALLETGRAZENZADEPOSITO.BOF then 
+
+    while not rsSQLPALLETGRAZENZADEPOSITO.EOF
+
+        pallet_deposito = rsSQLPALLETGRAZENZADEPOSITO("PALLET_DEPOSITO")
+        MG70_CODDEP_MG58 = rsSQLPALLETGRAZENZADEPOSITO("MG70_CODDEP_MG58")
+        MG58_DESCRDEP = rsSQLPALLETGRAZENZADEPOSITO("MG58_DESCRDEP")
+        MG58_CODDEP = rsSQLPALLETGRAZENZADEPOSITO("MG58_CODDEP")
+
+        if NumeroCalcolo(pallet_deposito) <> 0 and trim(pallet_deposito)&"[]" <> "[]" then
+
+            if MG58_DESCRDEP <> "Magazzino Brenta" then
+
+                stringaPalletGiazenzaDeposito=stringaPalletGiazenzaDeposito&ROUND(pallet_deposito,0)&";"&MG70_CODDEP_MG58&";"&MG58_DESCRDEP&";"&MG58_CODDEP&"|"
+
+            end if 
+        
+        end if 
+
+       
+ 
+        rsSQLPALLETGRAZENZADEPOSITO.MoveNext
+    wend
+
+end if 
+
+    rsSQLPALLETGRAZENZADEPOSITO.close
+    set rsSQLPALLETGRAZENZADEPOSITO = nothing
+
+    stringaPalletGiazenzaDeposito = stringaPalletGiazenzaDeposito
+
+getPalletGiazenzaDeposito = stringaPalletGiazenzaDeposito
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getCelleLibere()
+
+    SQLCELLELIBERE = "SELECT count(MA_cella.id_cella) as celle_lib FROM MA_cella LEFT JOIN MA_zonaLogica ON MA_zonaLogica.id_zonaLogica = MA_cella.id_zonaLogica WHERE id_cella NOT IN (SELECT id_cella FROM MA_giacenza) AND MA_cella.cod_alias <> 'XX 00 00' AND COALESCE(MA_zonaLogica.disattiva,0) = 0 AND MA_Cella.cod NOT LIKE '%CR%'"
+
+    set rsCELLELIBERE = connessione.execute(SQLCELLELIBERE)
+
+    celleLibere = ""
+
+    if not rsCELLELIBERE.EOF and not rsCELLELIBERE.BOF then 
+    
+        celleLibere = rsCELLELIBERE("celle_lib")
+
+    end if 
+
+        rsCELLELIBERE.close
+    set rsCELLELIBERE = nothing
+
+
+    getCelleLibere = celleLibere
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getCelleTotali()
+
+    SQLCELLEDISPONIBILI = "SELECT count(MA_cella.id_cella) as celle_dispo FROM MA_cella LEFT JOIN MA_zonaLogica ON MA_zonaLogica.id_zonaLogica = MA_cella.id_zonaLogica WHERE 1=1 AND MA_cella.cod_alias <> 'XX 00 00' AND COALESCE(MA_zonaLogica.disattiva,0) = 0 AND MA_Cella.cod NOT LIKE '%CR%'"
+
+    set rsCELLEDISPONIBILI = connessione.execute(SQLCELLEDISPONIBILI)
+
+    celleTotali = ""
+
+    if not rsCELLEDISPONIBILI.EOF and not rsCELLEDISPONIBILI.BOF then 
+    
+        celleTotali = rsCELLEDISPONIBILI("celle_dispo")
+
+    end if 
+
+        rsCELLEDISPONIBILI.close
+    set rsCELLEDISPONIBILI = nothing
+
+
+    getCelleTotali = celleTotali
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getSommaArticoliPallettizzati(A1_CODICE)
+
+    SQLSOMMAARTICOLIPALLETTIZATI = "select count(GIACENZA) as somma from O_GruppiCodici inner join O_GruppiCodici_Codici ON O_GruppiCodici_Codici.idGruppoCodici = O_GruppiCodici.idGruppoCodici inner join V_Giacenze ON V_Giacenze.MG70_CODART_MG66 = O_GruppiCodici_Codici.CodiceArticolo where coalesce(datoCommerciale7,0)=0 and V_Giacenze.MG70_DITTA_CG18 =1 and V_Giacenze.GIACENZA > 0 and coalesce(GruppoSpese,0)=0 and O_GruppiCodici.A1_CODICE ="&A1_CODICE
+
+    set rsSQLSOMMAARTICOLIPALLETTIZATI = connessione.execute(SQLSOMMAARTICOLIPALLETTIZATI)
+
+    nRecord = ""
+
+    if not rsSQLSOMMAARTICOLIPALLETTIZATI.EOF and not rsSQLSOMMAARTICOLIPALLETTIZATI.BOF then 
+
+        nRecord = rsSQLSOMMAARTICOLIPALLETTIZATI("somma")
+
+    end if
+
+            rsSQLSOMMAARTICOLIPALLETTIZATI.close
+    set rsSQLSOMMAARTICOLIPALLETTIZATI = nothing
+
+    getSommaArticoliPallettizzati = ROUND(nRecord,0)
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function getMesiAnalisiAziendale(A1_CODICE)
+
+    SQLMESI = "select count(distinct mese)-1 as nMEse from AnalisiAziendale where A1_CODICE="&A1_CODICE
+
+    set rsMESI = connessione.execute(SQLMESI)
+
+    mesiAnni = ""
+
+    if not rsMESI.EOF and not rsMESI.BOF then 
+
+        nMesi = rsMESI("nMese")
+
+    end if
+
+    rsMESI.close
+    set rsMESI = nothing
+
+    if nMesi > 12 then nMesi=12
+
+    getMesiAnalisiAziendale = nMEsi
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+'function not used
+function getAnniAnalisiAziendale(A1_CODICE)
+
+    SQLANNI = "select distinct anno from AnalisiAziendale where A1_CODICE="&A1_CODICE
+
+    set rsANNI = connessione.execute(SQLANNI)
+
+    mesiAnni = ""
+
+    if not rsANNI.EOF and not rsANNI.BOF then 
+
+        while not rsANNI.EOF 
+
+            anno = rsANNI("anno")
+
+            if anno <> DatePart("yyyy",Date()) then
+                stringaAnni = stringaAnni&anno&";"
+            end if
+
+            rsANNI.movenext
+
+        wend
+
+    end if
+
+    rsANNI.close
+    set rsANNI = nothing
+
+    getAnniAnalisiAziendale = stringaAnni
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function getFirstPalletValue(mese,anno,A1_CODICE)
+
+    SQLPALLETVALUE = "select * from AnalisiAziendale where A1_CODICE="&A1_CODICE&" and Mese="&mese&" and anno="&anno&" and Tipo='REA'"
+    set rsPALLETVALUE = connessione.execute(SQLPALLETVALUE)
+
+    if not rsPALLETVALUE.EOF and not rsPALLETVALUE.BOF then palletValue = rsPALLETVALUE("PostiPallet")
+
+
+    getFirstPalletValue = palletValue
+
+    rsPALLETVALUE.close
+    set rsPALLETVALUE = nothing
+
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function getSommaPalletMag(codMag)
+
+    SQLSOMMAPALLETMAG = "select count(v_giacenzedep.MG70_CODART_MG66) as nPallet from O_GruppiCodici inner join O_GruppiCodici_Codici ON O_GruppiCodici_Codici.idGruppoCodici = O_GruppiCodici.idGruppoCodici and O_GruppiCodici_Codici.A1_CODICE = O_GruppiCodici.A1_CODICE inner join V_Giacenze ON V_Giacenze.MG70_CODART_MG66 = O_GruppiCodici_Codici.CodiceArticolo and V_Giacenze.MG70_DITTA_CG18 = O_GruppiCodici_Codici.A1_CODICE left join V_GIACENZEDEP on V_GIACENZEDEP.MG70_CODART_MG66 = O_GruppiCodici_Codici.CodiceArticolo and V_GIACENZEDEP.MG70_DITTA_CG18 = O_GruppiCodici_Codici.A1_CODICE WHERE coalesce(datoCommerciale7,0)=0  and V_Giacenze.MG70_DITTA_CG18 =1 and V_Giacenze.GIACENZA > 0 and coalesce(GruppoSpese,0)=0 and MG70_CODDEP_MG58 = '"&codMag&"'"
+    set rsSOMMAPALLETMAG = connessione.execute(SQLSOMMAPALLETMAG)
+
+    if not rsSOMMAPALLETMAG.EOF and not rsSOMMAPALLETMAG.BOF then nPalletMag=rsSOMMAPALLETMAG("nPallet")
+
+    getSommaPalletMag = nPalletMag
+
+    rsSOMMAPALLETMAG.close
+    set rsSOMMAPALLETMAG = nothing
+
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function getPltNonScaff()
+
+    SQLTOTALE = "SELECT COUNT(DISTINCT EtichettaLotto) as totale FROM MA_giacenza WHERE id_cella IN ( SELECT id_cella FROM MA_cella WHERE cod LIKE '%CR%')"
+
+    set rsTOTALE = connessione.execute(SQLTOTALE)
+
+    if not rsTOTALE.EOF and not rsTOTALE.BOF then totale = rsTOTALE("totale")
+
+    getPltNonScaff = totale
+
+    rsTOTALE.close
+    set rsTOTALE = nothing
+
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function getCellePlt20(a1_codice)
+
+    SQLCELLEPLT20 = " SELECT count(id_cella) as nCelle FROM (SELECT DISTINCT ma_cella.id_cella, MA_cella.cod_alias, MA_piano.cod_piano, CASE WHEN MA_zonaLogica.cubo = 1 THEN cod_cella ELSE '' END cod_cella, MA_giacenza.CodiceArticolo, MA_giacenza.EtichettaLotto, MA_giacenza.qta, O_GruppiCodici.datoCommerciale7, Descrizione  FROM MA_giacenza  LEFT JOIN MA_cella ON MA_cella.id_cella = MA_giacenza.id_cella  LEFT JOIN MA_piano ON MA_piano.id_piano = MA_cella.id_piano  LEFT JOIN MA_zonaLogica ON MA_zonaLogica.id_zonaLogica = MA_cella.id_zonaLogica  LEFT JOIN O_GruppiCodici_Codici ON O_GruppiCodici_Codici.CodiceArticolo = MA_giacenza.CodiceArticolo  INNER JOIN O_GruppiCodici ON O_GruppiCodici.idGruppoCodici = O_GruppiCodici_Codici.idGruppoCodici  INNER JOIN O_CodiciArticolo ON O_CodiciArticolo.CodiceArticolo = MA_giacenza.CodiceArticolo  WHERE 1=1  AND O_GruppiCodici.A1_CODICE = '"&a1_codice&"'  AND	O_CodiciArticolo.A1_DITTA_CODICE = 1  AND MA_cella.cod_alias <> 'XX 00 00'  AND COALESCE(MA_zonaLogica.disattiva,0) = 0  AND MA_Cella.cod NOT LIKE '%CR%' ) AS T  WHERE qta < (datoCommerciale7/100 * 20) AND NOT EXISTS(SELECT id_giacenza FROM MA_giacenza CHK WHERE CHK.id_cella = T.id_cella AND CHK.EtichettaLotto <> T.EtichettaLotto) "
+
+    set rsCELLEPLT20 = connessione.execute(SQLCELLEPLT20)
+
+    if not rsCELLEPLT20.EOF and not rsCELLEPLT20.BOF then nCelle = rsCELLEPLT20("nCelle")
+
+    getCellePlt20 = nCelle
+
+    rsCELLEPLT20.close
+    set rsTOTALE = nothing
+
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getTotalePalletDuplicati()
+
+    SQLTOTPLTDUPL="select count(*)  as totale from (select EtichettaLotto, count(*)  as tot from MA_giacenza group by EtichettaLotto having count(*)  > 1) as t"
+
+    set rsTOTPLTDUPL = connessione.execute(SQLTOTPLTDUPL)
+    
+    if not rsTOTPLTDUPL.EOF and not rsTOTPLTDUPL.BOF then nTotPltDupl = rsTOTPLTDUPL("totale")
+
+    getTotalePalletDuplicati = nTotPltDupl
+
+    rsTOTPLTDUPL.close
+    set rsTOTPLTDUPL = nothing
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getEtichetteDuplicate()
+
+    SQLETIDUPL="select EtichettaLotto, count(*) as tot from MA_giacenza group by EtichettaLotto having count(*) > 1"
+
+    set rsETIDUPL = connessione.execute(SQLETIDUPL)
+    
+    if not rsETIDUPL.EOF and not rsETIDUPL.BOF then  
+
+        while not rsETIDUPL.EOF
+
+            etichettaLotto = rsETIDUPL("EtichettaLotto")
+            totaleEtichette = rsETIDUPL("tot")
+
+            stringaEtichettaLotto = stringaEtichettaLotto&etichettaLotto&";"
+            stringaTotaleEtichette = stringaTotaleEtichette&totaleEtichette&";"
+
+            rsETIDUPL.movenext
+        
+        wend
+
+    end if 
+
+    getEtichetteDuplicate = stringaEtichettaLotto&"|"&stringaTotaleEtichette
+
+    rsETIDUPL.close
+    set rsETIDUPL = nothing
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function getDettagliEtichetteDuplicate(codEtichetta)
+
+    SQLDETTETIDUPL = "select a.id_giacenza, a.id_cella, a.CodiceArticolo, a.EtichettaLotto, a.qta, a.A1_CODICE, b.cod, b.cod_alias, c.cod_piano From MA_giacenza as a left join MA_cella as b on a.id_cella = b.id_cella left join MA_piano as c on b.id_piano = c.id_piano left join MA_montante as d on b.id_montante = d.id_montante where EtichettaLotto ='"&codEtichetta&"'"
+
+    set rsDETTETIDUPL = connessione.execute(SQLDETTETIDUPL)
+
+    if not rsDETTETIDUPL.EOF and not rsDETTETIDUPL.BOF then
+
+        while not rsDETTETIDUPL.EOF
+
+            idGiacenza = rsDETTETIDUPL("id_giacenza")
+            codAlias = rsDETTETIDUPL("cod_alias")
+            codPiano = rsDETTETIDUPL("cod_piano")
+
+            stringaIdGiacenza = stringaIdGiacenza&idGiacenza&";"
+            stringaCodAlias = stringaCodAlias&codAlias&";"
+            stringaCodPiano = stringaCodPiano&codPiano&";"
+
+            rsDETTETIDUPL.movenext
+
+        wend
+
+    end if 
+
+    getDettagliEtichetteDuplicate = stringaCodAlias&"|"&stringaCodPiano&"|"&stringaIdGiacenza
+
+    rsDETTETIDUPL.close
+    set rsDETTETIDUPL = nothing
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getCodAliasPalletCorridoiNormali()
+
+    SQLCAPLTCORNORM = "select distinct b.cod_alias,  a.id_cella from MA_giacenza as a left join MA_cella as b on a.id_cella = b.id_cella left join MA_piano as c on b.id_piano = c.id_piano left join Contatti ON Contatti.idContatto = a.idContatto where c.cod_piano = 'CR' and  b.id_cella <> (SELECT id_cella FROM MA_parametro INNER JOIN MA_cella ON MA_parametro.valore = MA_cella.cod WHERE MA_parametro.cod_parametro = 'CodCellaTerraCubo')"
+
+    set rsCAPLTCORNORM = connessione.execute(SQLCAPLTCORNORM)
+
+    if not rsCAPLTCORNORM.EOF and not rsCAPLTCORNORM.BOF then
+
+        while not rsCAPLTCORNORM.EOF
+
+            idCella = rsCAPLTCORNORM("id_cella")
+            codAlias = rsCAPLTCORNORM("cod_alias")
+
+            stringaIdCella = stringaIdCella&idCella&";"
+            stringaCodAlias = stringaCodAlias&codAlias&";"
+
+            rsCAPLTCORNORM.movenext
+
+        wend 
+
+    end if 
+
+    getCodAliasPalletCorridoiNormali = stringaIdCella&"|"&stringaCodAlias
+
+    rsCAPLTCORNORM.close
+    set rsCAPLTCORNORM = nothing
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getListPalletCorridoiNormali(idCella)
+
+    SQLPLTCORNORM = "select a.id_giacenza, a.id_cella, a.CodiceArticolo, a.EtichettaLotto, a.qta, a.A1_CODICE, CONCAT (Contatti.Nome, ' ', Contatti.Cognome) as ultimoOperatoreMov, b.cod, b.cod_alias, c.cod_piano, coalesce(z.cubo,0) as cubo from MA_giacenza as a left join MA_cella as b on a.id_cella = b.id_cella left join MA_piano as c on b.id_piano = c.id_piano left join MA_montante as d on b.id_montante = d.id_montante left join MA_zonaLogica as z on z.id_zonaLogica = b.id_zonaLogica left join Contatti ON Contatti.idContatto = a.idContatto where c.cod_piano = 'CR' and coalesce(z.cubo,0) = 0 and a.id_cella = '"&idCella&"'"
+
+    set rsPLTCORNORM = connessione.execute(SQLPLTCORNORM)
+
+    if not rsPLTCORNORM.EOF and not rsPLTCORNORM.BOF then
+
+        while not rsPLTCORNORM.EOF
+
+            eticettaLotto = rsPLTCORNORM("EtichettaLotto")
+            ultOpMov = rsPLTCORNORM("ultimoOperatoreMov")
+            
+            stringaEtichettaLotto = stringaEtichettaLotto&eticettaLotto&";"
+            stringaUltOpMpv = stringaUltOpMpv&ultOpMov&";"
+
+            rsPLTCORNORM.movenext
+
+        wend 
+
+    end if 
+
+    getListPalletCorridoiNormali = stringaEtichettaLotto&"|"&stringaUltOpMpv
+
+    rsPLTCORNORM.close
+    set rsPLTCORNORM = nothing
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getNRecordPalletCorridoioNormali()
+
+    SQLRECORD = "select count(*) as nRecord from MA_giacenza as a left join MA_cella as b on a.id_cella = b.id_cella left join MA_piano as c on b.id_piano = c.id_piano left join Contatti ON Contatti.idContatto = a.idContatto where c.cod_piano = 'CR' and  b.id_cella <> (SELECT id_cella FROM MA_parametro INNER JOIN MA_cella ON MA_parametro.valore = MA_cella.cod WHERE MA_parametro.cod_parametro = 'CodCellaTerraCubo')"
+
+    set rsRECORD = connessione.execute(SQLRECORD)
+
+    nRecord = 0
+    if not rsRECORD.EOF and not rsRECORD.BOF then nRecord = rsRECORD("nRecord")
+
+    getNRecordPalletCorridoioNormali = nRecord
+
+    rsRECORD.close
+    set rsRECORD =  nothing
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getNRecordPalletCubo()
+
+    SQLRECORDCUBI ="select count(*) as nRecord from MA_giacenza as a left join MA_cella as b on a.id_cella = b.id_cella left join Contatti ON Contatti.idContatto = a.idContatto where b.id_cella = (SELECT id_cella FROM MA_parametro INNER JOIN MA_cella ON MA_parametro.valore = MA_cella.cod WHERE MA_parametro.cod_parametro = 'CodCellaTerraCubo')"
+    
+    set rsRECORDCUBI = connessione.execute(SQLRECORDCUBI)
+
+    nRecord = 0
+    if not rsRECORDCUBI.EOF and not rsRECORDCUBI.BOF then nRecord = rsRECORDCUBI("nRecord")
+
+    getNRecordPalletCubo = nRecord
+
+    rsRECORDCUBI.close
+    set rsRECORDCUBI = nothing
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function getRecordPalletCubo()
+
+    SQLLISTRECORDCUBI ="select a.id_giacenza, a.id_cella, a.CodiceArticolo, a.EtichettaLotto, a.qta, a.A1_CODICE, a.data_ins, CONCAT (Contatti.Nome, ' ', Contatti.Cognome) as ultimoOperatoreMov, b.cod, b.cod_alias from MA_giacenza as a left join MA_cella as b on a.id_cella = b.id_cella left join Contatti ON Contatti.idContatto = a.idContatto where b.id_cella = (SELECT id_cella FROM MA_parametro INNER JOIN MA_cella ON MA_parametro.valore = MA_cella.cod WHERE MA_parametro.cod_parametro = 'CodCellaTerraCubo')"
+
+    set rsLISTRECORDCUBI = connessione.execute(SQLLISTRECORDCUBI)
+
+    if not rsLISTRECORDCUBI.EOF and not rsLISTRECORDCUBI.BOF then 
+    
+        while not rsLISTRECORDCUBI.EOF
+
+            eti= rsLISTRECORDCUBI("EtichettaLotto")
+            op= rsLISTRECORDCUBI("ultimoOperatoreMov")
+
+            stringEti = stringEti&eti&";"
+            stringOp = stringOp&op&";"
+
+            rsLISTRECORDCUBI.movenext
+
+        wend 
+
+    end if  
+
+    getRecordPalletCubo = stringEti&"|"&stringOp
+
+    rsLISTRECORDCUBI.close
+    set rsLISTRECORDCUBI = nothing
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getColliNonAllocati()
+
+    data=DateAdd("d",-7,Date())
+
+    giorno=DatePart("d",data)
+    mese=DatePart("m",data)
+
+    if DatePart("d",data)<10 then giorno="0"&giorno
+    if DatePart("m",data)<10 then mese="0"&mese
+
+    dataFiltro = DatePart("yyyy",data)&mese&giorno
+
+    SQLCOLLINONALLOCATI = "select * from ( select coalesce(sum(QuantitaAllocata),0) as QuantitaAllocata, coalesce(sum(QtaScarico),0) as QtaScarico, (select sum(O_OrdiniDettaglio.Quantita)  FROM    norsql.dbo.O_OrdiniDettaglio INNER JOIN    norsql.dbo.O_Ordini ON O_OrdiniDettaglio.idOrdine = O_Ordini.idOrdine INNER JOIN    norsql.dbo.O_CodiciArticolo ON O_CodiciArticolo.CodiceArticolo = O_OrdiniDettaglio.CodiceArticolo AND O_CodiciArticolo.A1_DITTA_CODICE = O_Ordini.A1_CODICE INNER JOIN    norsql.dbo.O_Fornitori ON norsql.dbo.O_Fornitori.A1_CODICE_CLIFOR = O_Ordini.A1_CODICE_CLIFOR    WHERE(O_Fornitori.A1_DITTA_CODICE =1) AND(O_CodiciArticolo.A1_DITTA_CODICE =  1) AND(O_OrdiniDettaglio.QuantitaGruppo > 0)    AND O_Ordini.NumeroOrdine = t2.NumeroOrdine and O_OrdiniDettaglio.Quantita > 0 and O_CodiciArticolo.Descrizione not like '%sconto%') as totQtaOrdine, NumeroOrdine, (select CONCAT(Contatti.Nome, ' ', Contatti.Cognome) as nome from Contatti where idContatto = (select O_Ordini.idContattoConfermaCarico from O_Ordini where NumeroOrdine = t2.NumeroOrdine)) as operatoreScarico from ( select t.* from ( SELECT AssEtichetteLotti.EtichettaLotto, AssEtichetteLotti.Lotto, AssEtichetteLotti.NumeroOrdine, AssEtichetteLotti.CodiceArticolo, AssEtichetteLotti.idOperatore, AssEtichetteLotti.dataScadenza, AssEtichetteLotti.merceBloccata, COALESCE(AssEtichetteLotti.quantitaLottoInseritoManualmente, AssEtichetteLotti.quantitaLottoInseritoAutomatico, 0) QtaScarico, COALESCE(MA_movimento.qta, 0) QuantitaAllocata, MA_movimento.data_mov, ROW_NUMBER() over (partition by AssEtichetteLotti.EtichettaLotto, AssEtichetteLotti.CodiceArticolo, AssEtichetteLotti.NumeroOrdine order by data_mov) as seqnum FROM AssEtichetteLotti LEFT JOIN MA_movimento ON MA_movimento.EtichettaLotto = AssEtichetteLotti.EtichettaLotto AND id_causale IN (1,2) WHERE COALESCE(dismessa,0) = 0 AND MA_movimento.scrittura_giacenza = 1 AND coalesce(MA_movimento.qta,0) > 0 AND NumeroOrdine in (SELECT distinct O_ORdini.NumeroOrdine     FROM norsql.dbo.O_Porti INNER JOIN     norsql.dbo.O_Fornitori INNER JOIN     norsql.dbo.O_CodiciArticolo INNER JOIN     norsql.dbo.O_OrdiniDettaglio INNER JOIN     norsql.dbo.O_Ordini ON O_OrdiniDettaglio.idOrdine = O_Ordini.idOrdine     ON O_CodiciArticolo.CodiceArticolo = O_OrdiniDettaglio.CodiceArticolo AND O_CodiciArticolo.A1_DITTA_CODICE = O_Ordini.A1_CODICE ON     O_Fornitori.A1_CODICE_CLIFOR = O_Ordini.A1_CODICE_CLIFOR and O_Fornitori.A1_DITTA_CODICE = O_Ordini.A1_CODICE ON O_Porti.idPorto = O_Ordini.idPortoArrivo     INNER JOIN     norsql.dbo.O_GruppiCodici INNER JOIN     norsql.dbo.O_GruppiCodici_Codici ON O_GruppiCodici.idGruppoCodici = O_GruppiCodici_Codici.idGruppoCodici     ON O_CodiciArticolo.CodiceArticolo = O_GruppiCodici_Codici.CodiceArticolo AND     O_CodiciArticolo.A1_DITTA_CODICE = O_GruppiCodici_Codici.A1_CODICE LEFT OUTER JOIN     norsql.dbo.V_Giacenze ON O_CodiciArticolo.CodiceArticolo = V_Giacenze.MG70_CODART_MG66     COLLATE Latin1_General_CI_AS AND O_CodiciArticolo.A1_DITTA_CODICE = V_Giacenze.MG70_DITTA_CG18     INNER JOIN norsql.dbo.O_Container_Ordine ON O_Container_Ordine.idContainerOrdini = O_ORdini.idContainerOrdini     INNER JOIN norsql.dbo.O_Container ON O_Container.idContainer = O_Container_Ordine.idContainer     inner join gamma.dbo.MG58_DEPOSITI ON MG58_DEPOSITI.MG58_CODDEP = O_ORdini.Deposito_downl and MG58_DEPOSITI.MG58_DITTA_CG18 = O_Ordini.A1_CODICE     INNER JOIN norsql.dbo.O_porti as t2 ON norsql.dbo.O_Ordini.idPortoPartenza = t2.idPorto     WHERE O_Ordini.Status = 'Closed' and date_downl <> '23000101' and O_Ordini.A1_CODICE = 1 AND O_Ordini.Arrival_Date_Type = 'RA' AND O_Ordini.status_ready = 1 and gamma.dbo.MG58_DEPOSITI.MG58_DITTA_CG18 = 1 	and coalesce(O_Ordini.gestitoDaApp,0)=1 and coalesce(O_Ordini.date_downl,0) > '"&dataFiltro&"') ) t where seqnum = 1 ) as t2 group by t2.NumeroOrdine ) x where QuantitaAllocata <> totQtaOrdine"
+
+    set rsCOLLINONALLOCATI = connessione.execute(SQLCOLLINONALLOCATI)
+
+    if not rsCOLLINONALLOCATI.EOF and not rsCOLLINONALLOCATI.BOF then
+
+        while not rsCOLLINONALLOCATI.EOF
+
+            qtaOrdine = rsCOLLINONALLOCATI("totQtaOrdine")
+            numOrdine = rsCOLLINONALLOCATI("NumeroOrdine")
+            opSca = rsCOLLINONALLOCATI("operatoreScarico")
+            qtaAllocata = rsCOLLINONALLOCATI("QuantitaAllocata")
+
+            stringaQtaOrdine = stringaQtaOrdine&qtaOrdine&";"
+            stringaNumOrdine = stringaNumOrdine&numOrdine&";"
+            stringaOpSca = stringaOpSca&opSca&";"
+            stringaQtaAllocata =stringaQtaAllocata&qtaAllocata&";"
+
+            rsCOLLINONALLOCATI.movenext
+
+        wend
+
+    end if 
+
+    getColliNonAllocati = stringaQtaOrdine&"|"&stringaNumOrdine&"|"&stringaOpSca&"|"&stringaQtaAllocata
+
+    rsCOLLINONALLOCATI.close
+    set rsCOLLINONALLOCATI =  nothing
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function getNRecordColliNonAllocati()
+
+    data=DateAdd("d",-7,Date())
+
+    giorno=DatePart("d",data)
+    mese=DatePart("m",data)
+
+    if DatePart("d",data)<10 then giorno="0"&giorno
+    if DatePart("m",data)<10 then mese="0"&mese
+
+    dataFiltro = DatePart("yyyy",data)&mese&giorno
+
+    SQLNCOLLINONALLOCATI = "select count(*) as nRecord from ( select coalesce(sum(QuantitaAllocata),0) as QuantitaAllocata, coalesce(sum(QtaScarico),0) as QtaScarico, (select sum(O_OrdiniDettaglio.Quantita)  FROM    norsql.dbo.O_OrdiniDettaglio INNER JOIN    norsql.dbo.O_Ordini ON O_OrdiniDettaglio.idOrdine = O_Ordini.idOrdine INNER JOIN    norsql.dbo.O_CodiciArticolo ON O_CodiciArticolo.CodiceArticolo = O_OrdiniDettaglio.CodiceArticolo AND O_CodiciArticolo.A1_DITTA_CODICE = O_Ordini.A1_CODICE INNER JOIN    norsql.dbo.O_Fornitori ON norsql.dbo.O_Fornitori.A1_CODICE_CLIFOR = O_Ordini.A1_CODICE_CLIFOR    WHERE(O_Fornitori.A1_DITTA_CODICE =1) AND(O_CodiciArticolo.A1_DITTA_CODICE =  1) AND(O_OrdiniDettaglio.QuantitaGruppo > 0)    AND O_Ordini.NumeroOrdine = t2.NumeroOrdine and O_OrdiniDettaglio.Quantita > 0 and O_CodiciArticolo.Descrizione not like '%sconto%') as totQtaOrdine, NumeroOrdine, (select CONCAT(Contatti.Nome, ' ', Contatti.Cognome) as nome from Contatti where idContatto = (select O_Ordini.idContattoConfermaCarico from O_Ordini where NumeroOrdine = t2.NumeroOrdine)) as operatoreScarico from ( select t.* from ( SELECT AssEtichetteLotti.EtichettaLotto, AssEtichetteLotti.Lotto, AssEtichetteLotti.NumeroOrdine, AssEtichetteLotti.CodiceArticolo, AssEtichetteLotti.idOperatore, AssEtichetteLotti.dataScadenza, AssEtichetteLotti.merceBloccata, COALESCE(AssEtichetteLotti.quantitaLottoInseritoManualmente, AssEtichetteLotti.quantitaLottoInseritoAutomatico, 0) QtaScarico, COALESCE(MA_movimento.qta, 0) QuantitaAllocata, MA_movimento.data_mov, ROW_NUMBER() over (partition by AssEtichetteLotti.EtichettaLotto, AssEtichetteLotti.CodiceArticolo, AssEtichetteLotti.NumeroOrdine order by data_mov) as seqnum FROM AssEtichetteLotti LEFT JOIN MA_movimento ON MA_movimento.EtichettaLotto = AssEtichetteLotti.EtichettaLotto AND id_causale IN (1,2) WHERE COALESCE(dismessa,0) = 0 AND MA_movimento.scrittura_giacenza = 1 AND coalesce(MA_movimento.qta,0) > 0 AND NumeroOrdine in (SELECT distinct O_ORdini.NumeroOrdine     FROM norsql.dbo.O_Porti INNER JOIN     norsql.dbo.O_Fornitori INNER JOIN     norsql.dbo.O_CodiciArticolo INNER JOIN     norsql.dbo.O_OrdiniDettaglio INNER JOIN     norsql.dbo.O_Ordini ON O_OrdiniDettaglio.idOrdine = O_Ordini.idOrdine     ON O_CodiciArticolo.CodiceArticolo = O_OrdiniDettaglio.CodiceArticolo AND O_CodiciArticolo.A1_DITTA_CODICE = O_Ordini.A1_CODICE ON     O_Fornitori.A1_CODICE_CLIFOR = O_Ordini.A1_CODICE_CLIFOR and O_Fornitori.A1_DITTA_CODICE = O_Ordini.A1_CODICE ON O_Porti.idPorto = O_Ordini.idPortoArrivo     INNER JOIN     norsql.dbo.O_GruppiCodici INNER JOIN     norsql.dbo.O_GruppiCodici_Codici ON O_GruppiCodici.idGruppoCodici = O_GruppiCodici_Codici.idGruppoCodici     ON O_CodiciArticolo.CodiceArticolo = O_GruppiCodici_Codici.CodiceArticolo AND     O_CodiciArticolo.A1_DITTA_CODICE = O_GruppiCodici_Codici.A1_CODICE LEFT OUTER JOIN     norsql.dbo.V_Giacenze ON O_CodiciArticolo.CodiceArticolo = V_Giacenze.MG70_CODART_MG66     COLLATE Latin1_General_CI_AS AND O_CodiciArticolo.A1_DITTA_CODICE = V_Giacenze.MG70_DITTA_CG18     INNER JOIN norsql.dbo.O_Container_Ordine ON O_Container_Ordine.idContainerOrdini = O_ORdini.idContainerOrdini     INNER JOIN norsql.dbo.O_Container ON O_Container.idContainer = O_Container_Ordine.idContainer     inner join gamma.dbo.MG58_DEPOSITI ON MG58_DEPOSITI.MG58_CODDEP = O_ORdini.Deposito_downl and MG58_DEPOSITI.MG58_DITTA_CG18 = O_Ordini.A1_CODICE     INNER JOIN norsql.dbo.O_porti as t2 ON norsql.dbo.O_Ordini.idPortoPartenza = t2.idPorto     WHERE O_Ordini.Status = 'Closed' and date_downl <> '23000101' and O_Ordini.A1_CODICE = 1 AND O_Ordini.Arrival_Date_Type = 'RA' AND O_Ordini.status_ready = 1 and gamma.dbo.MG58_DEPOSITI.MG58_DITTA_CG18 = 1 	and coalesce(O_Ordini.gestitoDaApp,0)=1 and coalesce(O_Ordini.date_downl,0) > '"&dataFiltro&"') ) t where seqnum = 1 ) as t2 group by t2.NumeroOrdine ) x where QuantitaAllocata <> totQtaOrdine"
+
+    set rsNCOLLINONALLOCATI = connessione.execute(SQLNCOLLINONALLOCATI)
+
+    nRecord = 0
+    if not rsNCOLLINONALLOCATI.EOF and not rsNCOLLINONALLOCATI.BOF then nRecord = rsNCOLLINONALLOCATI("nRecord")
+
+    getNRecordColliNonAllocati = nRecord
+
+    rsNCOLLINONALLOCATI.close
+    set rsNCOLLINONALLOCATI = nothing
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function sendMailAllarmi()
+
+    nPltDupl = getTotalePalletDuplicati()
+    nPltCorr = getNRecordPalletCorridoioNormali()
+    nPltCubi = getNRecordPalletCubo()
+    nColliNonAll = getNRecordColliNonAllocati()
+
+    testoMail="Report Allarmi Magazzino <br><br>TOTALE PALLET DUPLICATI: "&nPltDupl&"<br>NUMERO PALLET CORRIDOI: "&nPltCorr&"<br>NUMERO PALLET CORRIDOI CUBO: "&nPltCubi&"<br>COLLI SCARICATI NON ALLOCATI: "&nColliNonAll
+
+    dest= "roberto.lazzari@brentasrl.it;alessandro.lovo@outlink.it;orfeo.bordin@outlink.it"
+    '               MittenteMail,DestinatarioMail,BccMail,OggettoMail,MessaggioMail,AllegatiMail,isPEC,DittaMail,idContattoMail,isNewsletter,PosticipaMinuti'
+    call addMailing("NOR@brenta-nor.it",dest,"","Test report allarmi",testoMail,"",0,1,0,0,0)
+
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function dataIT(data)
+
+    anno = DatePart("yyyy",data)
+    mese = DatePart("m",data)
+    giorno = DatePart("d",data)
+
+    if giorno <10 then giorno="0"&giorno
+    if mese <10 then mese="0"&mese
+
+    dataIT = giorno&"/"&mese&"/"&anno
+
+end function
+
+'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+%>
+
+
+
+
+
+
